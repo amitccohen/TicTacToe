@@ -1,0 +1,37 @@
+.square {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .board-row {
+    display: flex;
+  }
+  
+  .winner {
+    font-size: 40px;
+    margin-top: 20px;
+  }
+  
+  .x {
+    color: red;
+    font-size: 80px;
+  }
+  
+  .o {
+    color: blue;
+    font-size: 80px;
+  }
+
+  .play-again {
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: lightblue;
+  }

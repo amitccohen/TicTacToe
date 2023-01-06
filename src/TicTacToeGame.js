@@ -1,79 +1,98 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './TicTacToe.css';
 
-class TicTacToeGame extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      board: Array(9).fill(null),
-      player: 'X',
-      winner: null,
-    };
-  }
+function TicTacToe() {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [currentPlayer, setCurrentPlayer] = useState('X');
+  const [winner, setWinner] = useState(null);
 
-  handleClick(index) {
-    if (this.state.winner) return;
-    if (this.state.board[index]) return;
+  const winningCombinations = [    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
 
-    let newBoard = this.state.board.slice();
-    newBoard[index] = this.state.player;
-    this.setState({
-      board: newBoard,
-      player: this.state.player === 'X' ? 'O' : 'X',
-    });
-    this.checkForWinner();
-  }
+  const handleClick = (index) => {
+    if (board[index] !== null || winner !== null) {
+      return;
+    }
 
-  checkForWinner() {
-    const winningCombinations = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
+    const newBoard = [...board];
+    newBoard[index] = currentPlayer;
+    setBoard(newBoard);
+
+    if (board.every((square) => square !== null) && winner === null) {
+        setWinner('Tie');
+      }
 
     for (let i = 0; i < winningCombinations.length; i++) {
       const [a, b, c] = winningCombinations[i];
-      if (
-        this.state.board[a] &&
-        this.state.board[a] === this.state.board[b] &&
-        this.state.board[a] === this.state.board[c]
-      ) {
-        this.setState({
-          winner: this.state.player,
-        });
+      if (newBoard[a] && newBoard[a] === newBoard[b] && newBoard[a] === newBoard[c]) {
+        setWinner(currentPlayer);
+        return;
       }
     }
-  }
 
-  render() {
-    const squares = this.state.board.map((square, index) => (
-      <div
-        key={index}
-        onClick={() => this.handleClick(index)}
-        className="square"
-      >
-        {square}
-      </div>
-    ));
+    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+    if (board.every((square) => square !== null) && winner === null) {
+        setWinner('Tie');
+      }
+  };
 
-    let status;
-    if (this.state.winner) {
-      status = `Winner: ${this.state.winner}`;
-    } else {
-      status = `Next player: ${this.state.player}`;
-    }
+  const handlePlayAgain = () => {
+    setBoard(Array(9).fill(null));
+    setCurrentPlayer('X');
+    setWinner(null);
+  };
 
+  const renderSquare = (index) => {
     return (
-      <div className="game">
-        <div className="board">{squares}</div>
-        <div className="status">{status}</div>
-      </div>
+      <button className="square" onClick={() => handleClick(index)}>
+        {board[index] === 'X' ? (
+            <div className="x">X</div>
+            ) : board[index] === 'O' ? (
+            <div className="o">O</div>
+            ) : null}
+      </button>
     );
-  }
+  };
+
+  return (
+    <div>
+      {winner !== null ? (
+        <div>
+          <div className="winner">{winner === 'Tie' ? 'It\'s a tie!' : `${winner} has won!`}</div>
+          <button className="play-again" onClick={handlePlayAgain}>
+            Play Again
+          </button>
+        </div>
+      ) : (
+        <div>
+          <div>
+            <div className="board-row">
+              {renderSquare(0)}
+              {renderSquare(1)}
+              {renderSquare(2)}
+            </div>
+            <div className="board-row">
+              {renderSquare(3)}
+              {renderSquare(4)}
+              {renderSquare(5)}
+            </div>
+            <div className="board-row">
+              {renderSquare(6)}
+              {renderSquare(7)}
+              {renderSquare(8)}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default TicTacToeGame;
+export default TicTacToe;
